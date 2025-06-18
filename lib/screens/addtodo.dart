@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:todolist/domain/todo.dart';
 
@@ -10,12 +12,34 @@ class addtodo extends StatefulWidget {
 
 class _addtodoState extends State<addtodo> {
   final TextEditingController _controller = TextEditingController();
+  DateTime? startDate = DateTime(2025);
+  DateTime? endDate = DateTime(2030);
   final List<Todo> _listToDo = [];
 
-  void addTodo() {
+  Future<void> selectedDate({required bool isStart}) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2025),
+      lastDate: DateTime(2030),
+    );
+    setState(() {
+      if (pickedDate != null) {
+        setState(() {
+          if (isStart) {
+            startDate = pickedDate;
+          } else {
+            endDate = pickedDate;
+          }
+        });
+      }
+    });
+  }
+
+  void addTodo(Todo todo) {
     String text = _controller.text;
     setState(() {
-      _listToDo.add(Todo(dateTime: DateTime(2025), title: text));
+      _listToDo.add(todo);
     });
   }
 
@@ -37,17 +61,48 @@ class _addtodoState extends State<addtodo> {
                 decoration: InputDecoration(
                   // dùng để tùy chỉnh ô input
                   border: OutlineInputBorder(), // dùng để vẽ viền cho ô input
-                  hintText: 'Enter To Do',
+                  hintText: 'Enter Title',
                   // labelText: 'ádasdsad',
                 ),
               ),
+              Text(
+                startDate != null
+                    ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
+                    : 'No date selected',
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  selectedDate(isStart: true);
+                },
+                child: const Text('Select Start Date'),
+              ),
+              Text(
+                endDate != null
+                    ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
+                    : 'No date selected',
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  selectedDate(isStart: false);
+                },
+                child: const Text('Select End Date'),
+              ),
+
               ElevatedButton(
                 onPressed: () {
                   // String input = _controller.text;
-                  addTodo();
+                  addTodo(
+                    Todo(
+                      title: _controller.text,
+                      startDate: startDate!,
+                      endDate: endDate!,
+                      isDone: false,
+                    ),
+                  );
                 },
                 child: Text('Add New To Do'),
               ),
+
               Expanded(
                 child: ListView.builder(
                   itemCount: _listToDo.length,
@@ -55,20 +110,20 @@ class _addtodoState extends State<addtodo> {
                     final todo = _listToDo[index];
                     return ListTile(
                       leading: Checkbox(
-                        value: todo['done'],
+                        value: todo.isDone ?? false,
                         onChanged: (bool? value) {
                           setState(() {
-                            _listToDo[index]['done'] = value!;
+                            todo.isDone = value ?? false;
                           });
                         },
                       ),
                       title: Text(
-                        todo['title'],
+                        todo.title,
                         style: TextStyle(
-                          decoration: todo['done']
+                          decoration: todo.isDone
                               ? TextDecoration.lineThrough
                               : null,
-                          color: todo['done'] ? Colors.grey : Colors.black,
+                          color: todo.isDone ? Colors.grey : Colors.black,
                         ),
                       ),
                       trailing: IconButton(

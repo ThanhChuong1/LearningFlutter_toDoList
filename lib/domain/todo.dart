@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Todo {
   Todo({
     required this.title,
@@ -7,8 +5,22 @@ class Todo {
     required this.endDate,
     required this.isDone,
   });
-  String title; //null-able
+  String title;
   DateTime startDate;
   DateTime endDate;
   bool isDone;
+
+  Todo copyWith({
+    String? title,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool? isDone,
+  }) {
+    return Todo(
+      title: title ?? this.title,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.startDate,
+      isDone: isDone ?? this.isDone,
+    );
+  }
 }

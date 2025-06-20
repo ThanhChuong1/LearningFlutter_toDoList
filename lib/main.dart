@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todolist/bloc/bloc.dart';
 import 'package:todolist/screens/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(BlocProvider(create: (_) => ToDoBloc(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -13,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'To Do App',
       theme: ThemeData(
         // This is the theme of your application.

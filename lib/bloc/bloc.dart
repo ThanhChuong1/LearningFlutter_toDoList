@@ -3,18 +3,31 @@ import 'package:todolist/bloc/event.dart';
 import 'package:todolist/bloc/state.dart';
 
 class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
-  ToDoBloc() : super(ToDoState([])) {
-    on<AddToDo>((event, emit) {
-      print(event.todo.title);
+  ToDoBloc() : super(ToDoState(todos: [])) {
+    void onAddToDo(AddToDo event, Emitter<ToDoState> emit) {
+      print(event.todo.startDate);
+      print(event.todo.endDate);
       final updated = [...state.todos, event.todo];
-      emit(ToDoState(updated));
-    });
+      emit(state.copyWith(todos: updated));
+    }
 
-    on<DeleteToDo>((event, emit) {
+    void onDeleteToDo(DeleteToDo event, Emitter<ToDoState> emit) {
       final todos = [...state.todos];
-      // state.todos.removeAt(event.index); //ds bi delete
       todos.removeAt(event.index);
-      emit(ToDoState(todos));
-    });
+      emit(state.copyWith(todos: todos));
+    }
+
+    void onSelectDate(SelectDate event, Emitter<ToDoState> emit) {
+      print(event.selectDate);
+      if (event.isStart) {
+        emit(state.copyWith(startDate: event.selectDate));
+      } else {
+        emit(state.copyWith(endDate: event.selectDate));
+      }
+    }
+
+    on<AddToDo>(onAddToDo);
+    on<SelectDate>(onSelectDate);
+    on<DeleteToDo>(onDeleteToDo);
   }
 }

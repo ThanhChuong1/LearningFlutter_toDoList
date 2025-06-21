@@ -1,13 +1,13 @@
 class Todo {
   Todo({
     required this.title,
-    required this.startDate,
-    required this.endDate,
+    this.startDate,
+    this.endDate,
     required this.isDone,
   });
   String title;
-  DateTime startDate;
-  DateTime endDate;
+  DateTime? startDate;
+  DateTime? endDate;
   bool isDone;
 
   Todo copyWith({
@@ -19,7 +19,7 @@ class Todo {
     return Todo(
       title: title ?? this.title,
       startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
       isDone: isDone ?? this.isDone,
     );
   }

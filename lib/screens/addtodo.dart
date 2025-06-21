@@ -16,31 +16,35 @@ class addtodo extends StatefulWidget {
 
 class _addtodoState extends State<addtodo> {
   final TextEditingController _controller = TextEditingController();
-  DateTime? startDate = DateTime(2025);
-  DateTime? endDate = DateTime(2030);
+  DateTime? startDate = DateTime.now();
+  DateTime? endDate = DateTime.now();
 
-  Future<void> selectedDate({required bool isStart}) async {
+  Future<void> selectDate({required bool isStart}) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2025),
       lastDate: DateTime(2030),
     );
-    setState(() {
-      if (pickedDate != null) {
-        setState(() {
-          if (isStart) {
-            startDate = pickedDate;
-          } else {
-            endDate = pickedDate;
-          }
-        });
-      }
-    });
+
+    if (pickedDate != null) {
+      bloc?.add(SelectDate(isStart, pickedDate));
+    }
+
+    // setState(() {
+    //   if (pickedDate != null) {
+    //     setState(() {
+    //       if (isStart) {
+    //         startDate = pickedDate;
+    //       } else {
+    //         endDate = pickedDate;
+    //       }
+    //     });
+    //   }
+    // });
   }
 
   void addTodo(Todo todo) {
-    String text = _controller.text;
     bloc?.add(AddToDo(todo));
   }
 
@@ -69,42 +73,33 @@ class _addtodoState extends State<addtodo> {
                   TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      // dùng để tùy chỉnh ô input
-                      border:
-                          OutlineInputBorder(), // dùng để vẽ viền cho ô input
+                      border: OutlineInputBorder(),
                       hintText: 'Enter Title',
-                      // labelText: 'ádasdsad',
                     ),
                   ),
                   SizedBox(height: 10),
                   Row(
                     children: [
-                      Text(
-                        startDate != null
-                            ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
-                            : 'No date selected',
-                      ),
                       OutlinedButton(
                         onPressed: () {
-                          selectedDate(isStart: true);
+                          selectDate(isStart: true);
                         },
-                        child: const Text(
-                          'Select Start Date',
-                          style: TextStyle(fontSize: 10),
+                        child: Text(
+                          state.startDate != null
+                              ? '${state.startDate!.day}/${state.startDate!.month}/${state.startDate!.year}'
+                              : 'Start Date',
+                          style: TextStyle(fontSize: 14),
                         ),
                       ),
-                      Text(
-                        endDate != null
-                            ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
-                            : 'No date selected',
-                      ),
+
                       OutlinedButton(
                         onPressed: () {
-                          selectedDate(isStart: false);
+                          selectDate(isStart: false);
                         },
-                        child: const Text(
-                          'Select End Date',
-                          style: TextStyle(fontSize: 10),
+                        child: Text(
+                          state.endDate != null
+                              ? '${state.endDate!.day}/${state.endDate!.month}/${state.endDate!.year}'
+                              : 'End Date',
                         ),
                       ),
                     ],

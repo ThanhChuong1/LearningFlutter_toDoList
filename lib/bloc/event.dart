@@ -17,4 +17,8 @@ class DeleteToDo extends ToDoEvent {
   DeleteToDo(this.index);
 }
 
-
+class SelectDate extends ToDoEvent {
+  final DateTime selectDate;
+  final bool isStart;
+  SelectDate(this.isStart, this.selectDate);
+}

@@ -1,7 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todolist/bloc/bloc.dart';
+import 'package:todolist/bloc/event.dart';
 // import 'package:flutter/scheduler.dart';
-import 'package:todolist/task_info.dart';
+import 'package:todolist/screen/task_info.dart';
 
 class SecondHome extends StatefulWidget {
   const SecondHome({super.key});
@@ -195,12 +198,18 @@ class _SecondHomeState extends State<SecondHome> {
   void _saveTask() {
     if (TaskController.text.isEmpty) return;
     final newTask = Taskinfo(
+      // title: TaskController.text,
+      // note: noteController.text,
+      // time: selectedTime.format(context),
+      // priorityColor: selectedColor,
+      id: DateTime.now()
+          .millisecondsSinceEpoch, // API cần id, dù không dùng, dùng tạm số lớn
       title: TaskController.text,
-      note: noteController.text,
-      time: selectedTime.format(context),
-      priorityColor: selectedColor,
+      completed: false,
+      userId: 1,
     );
 
-    Navigator.pop(context, newTask);
+    context.read<TaskBloc>().add(AddTask(newTask));
+    Navigator.pop(context);
   }
 }

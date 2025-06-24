@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todolist/data/datasoures/remote/todo/todo_remote_data_source.dart';
+import 'package:todolist/data/datasoures/remote/todo/todo_remote_data_source_impl.dart';
 import 'package:todolist/presentation/modules/app.dart';
+import 'package:todolist/presentation/modules/todo/bloc/todo_bloc.dart';
+import 'package:todolist/presentation/modules/todo/bloc/todo_event.dart';
+import 'package:todolist/presentation/modules/todo/views/todo_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +38,10 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: App(),
+      home: BlocProvider(
+        create: (_) => TodoBloc(TodoRemoteDataSourceImpl()),
+        child: TodoListScreen(),
+      ),
     );
   }
 }

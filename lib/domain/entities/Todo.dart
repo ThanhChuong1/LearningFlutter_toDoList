@@ -10,6 +10,14 @@ class Todo {
     required this.title,
     required this.completed,
   });
+  Todo copyWith({int? id, String? title, bool? completed, int? userId}) {
+    return Todo(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      completed: completed ?? this.completed,
+      userId: userId ?? this.userId,
+    );
+  }
 
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_bloc.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_event.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_state.dart';
+import 'package:todolist/route/route_list.dart';
 
 class LoginScreen extends StatefulWidget{
   const LoginScreen({super.key});
@@ -31,9 +32,15 @@ class _LoginScreenState extends State<LoginScreen>{
           listener: (context, state){
             if (state is LoginSuccess){
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Welcome ${state.username}!")),
+                SnackBar(
+                  content: Text("Welcome ${state.user}!")),
               );
-            } else if (state is LoginFailure){
+              Navigator.pushReplacementNamed(
+                context, 
+                RouteList.todo, 
+                arguments: state.user);
+            } 
+            else if (state is LoginFailure){
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );

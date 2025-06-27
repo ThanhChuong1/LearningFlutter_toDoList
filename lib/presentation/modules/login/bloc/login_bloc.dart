@@ -20,7 +20,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
         (user) => user.email.toLowerCase() == event.email.toLowerCase(),
         orElse: () => throw Exception("Email not found"),
       );
-      emit(LoginSuccess(matchedUser.name));
+      emit(LoginSuccess(matchedUser));
+      // emit(LoginSuccess(user as String));
     }catch (e){
       emit(LoginFailure("Login failed: ${e.toString()}"));
     }

@@ -8,8 +8,8 @@ class PostInitial extends PostState {}
 class PostLoading extends PostState {}
 
 class PostLoaded extends PostState {
-  final List<SocialPost> posts;      // các bài hiện tại hiển thị
-  final List<SocialPost> allPosts;   // toàn bộ bài viết từ API
+  final List<SocialPost> posts;      
+  final List<SocialPost> allPosts;   
   final List<SocialUser> users;
 
   PostLoaded({

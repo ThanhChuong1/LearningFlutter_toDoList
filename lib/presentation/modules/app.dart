@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todolist/data/data_source/data_repository.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_bloc.dart';
-import 'package:todolist/route/route.dart'; // chứa RouteGenerator
+import 'package:todolist/route/route.dart'; 
 import 'package:todolist/route/route_list.dart';
 
 class MyApp extends StatelessWidget {

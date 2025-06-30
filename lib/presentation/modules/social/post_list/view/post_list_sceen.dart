@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todolist/domain/entities/cubit/user_cubit.dart';
 import 'package:todolist/domain/entities/social_user.dart';
+import 'package:todolist/presentation/modules/social/comment/view/comment_screen.dart';
 import 'package:todolist/presentation/modules/social/post_list/bloc/post_bloc.dart';
 import 'package:todolist/presentation/modules/social/post_list/bloc/post_event.dart';
 import 'package:todolist/presentation/modules/social/post_list/bloc/post_state.dart';
+import 'package:todolist/route/route_list.dart';
 
 class PostListScreen extends StatefulWidget {
   const PostListScreen({super.key});
@@ -35,8 +38,33 @@ class _PostListScreenState extends State<PostListScreen> {
     super.dispose();
   }
 
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Thông báo"),
+        content: const Text("Bạn chưa đăng nhập."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Back"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, RouteList.login);
+            },
+            child: const Text("Login"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.watch<UserCubit>().state;
+
     return Scaffold(
       appBar: AppBar(title: const Text("List Posts")),
       body: BlocBuilder<PostBloc, PostState>(
@@ -76,6 +104,7 @@ class _PostListScreenState extends State<PostListScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Avatar + Name
                           Row(
                             children: [
                               CircleAvatar(
@@ -92,6 +121,8 @@ class _PostListScreenState extends State<PostListScreen> {
                             ],
                           ),
                           const SizedBox(height: 12),
+
+                          // Title
                           Text(
                             post.title,
                             style: const TextStyle(
@@ -100,7 +131,33 @@ class _PostListScreenState extends State<PostListScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
+
+                          // Body
                           Text(post.body),
+                          const SizedBox(height: 12),
+
+                          // Button
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton.icon(
+                              onPressed: () {
+                                if (currentUser == null) {
+                                  _showLoginDialog(context);
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          CommentScreen(postId: post.id),
+                                    ),
+                                  );
+                                }
+                              },
+
+                              icon: const Icon(Icons.comment),
+                              label: const Text("Comment"),
+                            ),
+                          ),
                         ],
                       ),
                     ),

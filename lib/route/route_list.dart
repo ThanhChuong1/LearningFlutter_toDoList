@@ -3,4 +3,6 @@ class RouteList {
   // static const String home = '/';
   static const String todo = '/todo';
   static const String profile = '/profile';
+
+  static const String postList = '/post-list';
 }

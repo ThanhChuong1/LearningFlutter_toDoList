@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:todolist/data/datasoures/remote/social_api_repository.dart';
-import 'package:todolist/domain/entities/cubit/user_cubit.dart';
+import 'package:todolist/presentation/modules/user/bloc/user_bloc.dart';
+import 'package:todolist/presentation/modules/user/bloc/user_state.dart';
 import 'package:todolist/presentation/modules/social/comment/bloc/comment_bloc.dart';
 import 'package:todolist/presentation/modules/social/comment/bloc/comment_event.dart';
 import 'package:todolist/presentation/modules/social/comment/bloc/comment_state.dart';
@@ -40,11 +41,8 @@ class _CommentScreenState extends State<CommentScreen> {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
-    final user = context.read<UserCubit>().state;
-
-    if (user == null) {
-      return;
-    }
+    final userState = context.read<UserBloc>().state;
+    final user = (userState as UserLoaded).user;
 
     final newComment = SocialComment(
       postId: widget.postId,
@@ -54,9 +52,7 @@ class _CommentScreenState extends State<CommentScreen> {
       body: text,
     );
 
-
     _commentBloc.add(MockAddComment(newComment));
-
     _controller.clear();
   }
 

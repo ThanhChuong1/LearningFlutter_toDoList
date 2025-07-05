@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todolist/domain/entities/cubit/user_cubit.dart';
 import 'package:todolist/domain/mapper/user_mapper.dart';
+import 'package:todolist/presentation/modules/user/bloc/user_bloc.dart';
+import 'package:todolist/presentation/modules/user/bloc/user_event.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_bloc.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_event.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_state.dart';
@@ -34,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
           listener: (context, state) {
             if (state is LoginSuccess) {
               final socialUser = toSocialUser(state.user);
-              context.read<UserCubit>().setUser(socialUser);
+              context.read<UserBloc>().add(UserLoggedIn(socialUser));
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text("Welcome ${state.user}!")));

@@ -1,49 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todolist/domain/mapper/user_mapper.dart';
+import 'package:todolist/presentation/modules/user/bloc/user_bloc.dart';
+import 'package:todolist/presentation/modules/user/bloc/user_event.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_bloc.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_event.dart';
 import 'package:todolist/presentation/modules/login/bloc/login_state.dart';
 import 'package:todolist/route/route_list.dart';
 
-class LoginScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-   State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>{
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
 
-  void _onLoginPressed(){
+  void _onLoginPressed() {
     final email = _emailController.text.trim();
     if (email.isNotEmpty) {
       context.read<LoginBloc>().add(LoginSubmitted(email));
     }
   }
 
- @override
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: BlocListener<LoginBloc, LoginState>(
-          listener: (context, state){
-            if (state is LoginSuccess){
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Welcome ${state.user}!")),
-              );
+          listener: (context, state) {
+            if (state is LoginSuccess) {
+              final socialUser = toSocialUser(state.user);
+              context.read<UserBloc>().add(UserLoggedIn(socialUser));
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("Welcome ${state.user}!")));
               Navigator.pushReplacementNamed(
-                context, 
-                RouteList.todo, 
-                arguments: state.user);
-            } 
-            else if (state is LoginFailure){
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
+                context,
+                RouteList.postList,
+                // arguments: state.user,
               );
+            } else if (state is LoginFailure) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           child: Column(
@@ -60,21 +64,20 @@ class _LoginScreenState extends State<LoginScreen>{
               ),
               const SizedBox(height: 20),
               BlocBuilder<LoginBloc, LoginState>(
-                builder: (context, state){
-                  if (state is LoginLoading){
+                builder: (context, state) {
+                  if (state is LoginLoading) {
                     return const CircularProgressIndicator();
                   }
                   return ElevatedButton(
-                    onPressed: _onLoginPressed, 
+                    onPressed: _onLoginPressed,
                     child: const Text("Login"),
                   );
-                }
-              )
+                },
+              ),
             ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
-  
 }

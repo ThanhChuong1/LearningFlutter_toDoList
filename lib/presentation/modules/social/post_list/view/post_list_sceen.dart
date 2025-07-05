@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todolist/domain/entities/social_user.dart';
 import 'package:todolist/presentation/modules/social/post_list/bloc/post_bloc.dart';
 import 'package:todolist/presentation/modules/social/post_list/bloc/post_event.dart';
 import 'package:todolist/presentation/modules/social/post_list/bloc/post_state.dart';
+import 'post_list_view.dart';
 
 class PostListScreen extends StatefulWidget {
   const PostListScreen({super.key});
@@ -44,69 +44,9 @@ class _PostListScreenState extends State<PostListScreen> {
           if (state is PostLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is PostLoaded) {
-            return ListView.builder(
-              controller: _scrollController,
-              itemCount: state.posts.length,
-              itemBuilder: (context, index) {
-                final post = state.posts[index];
-                final user = state.users.firstWhere(
-                  (u) => u.id == post.userId,
-                  orElse: () => SocialUser(
-                    id: 0,
-                    name: "Unknown",
-                    username: "",
-                    email: "",
-                  ),
-                );
-
-                final avatarUrl = "https://i.pravatar.cc/150?u=${user.id}";
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 8.0,
-                  ),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(avatarUrl),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                user.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            post.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(post.body),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+            return PostListView(
+              state: state,
+              scrollController: _scrollController,
             );
           } else if (state is PostError) {
             return Center(child: Text("error: ${state.message}"));
